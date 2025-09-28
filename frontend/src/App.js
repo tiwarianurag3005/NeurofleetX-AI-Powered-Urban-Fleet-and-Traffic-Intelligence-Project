@@ -1,42 +1,58 @@
 import React, { useState, useEffect } from 'react';
-import { AuthProvider } from './contexts/AuthContext';
-import { DataProvider } from './contexts/DataContext';
-import Navbar from './components/Navbar';
-import LoginPage from './pages/LoginPage';
-import SignUpPage from './pages/SignUpPage';
-import PassengerHomePage from './pages/PassengerHomePage';
-import ConfirmRidePage from './pages/ConfirmRidePage';
-import TrackingPage from './pages/TrackingPage';
-import ProfilePage from './pages/ProfilePage';
-import FleetOwnerDashboard from './pages/FleetOwnerDashboard';
+
+// --- Contexts ---
+import AuthContext from './context/AuthContext';
+import DataContext from './context/DataContext';
+
+// --- Common Components ---
+import Navbar from './components/common/Navbar';
+
+// --- Page Components ---
+import LoginPage from './components/auth/LoginPage';
+import SignUpPage from './components/auth/SignUpPage';
+import PassengerHomePage from './components/passenger/PassengerHomePage';
+import ConfirmRidePage from './components/passenger/ConfirmRidePage';
+import TrackingPage from './components/passenger/TrackingPage';
+import ProfilePage from './components/passenger/ProfilePage';
+import FleetOwnerDashboard from './components/fleet/FleetOwnerDashboard';
 
 export default function App() {
+    // --- State Management ---
     const [user, setUser] = useState(null);
-    const [users, setUsers] = useState([]);
-    const [page, setPage] = useState('login');
+    const [users, setUsers] = useState([]); // Database of all registered users
+    const [page, setPage] = useState('login'); // login, signup, passenger, fleet, confirm, tracking, profile
     const [vehicles, setVehicles] = useState([]);
     const [rides, setRides] = useState([]);
     const [currentRide, setCurrentRide] = useState(null);
 
-    // Load data from localStorage on initial render
+    // --- Effects to load data from localStorage on initial render ---
     useEffect(() => {
-        const loggedInUser = JSON.parse(localStorage.getItem('neurofleetx_user'));
-        if (loggedInUser) {
-            setUser(loggedInUser);
-            setPage(loggedInUser.role === 'Passenger' ? 'passenger' : 'fleet');
-        }
+        // By commenting out the following lines, the app will start fresh every time
+        // and will not load any previously saved data from localStorage.
 
-        const storedUsers = JSON.parse(localStorage.getItem('neurofleetx_users_db'));
-        if (storedUsers) setUsers(storedUsers);
+        // const loggedInUser = JSON.parse(localStorage.getItem('neurofleetx_user'));
+        // if (loggedInUser) {
+        //     setUser(loggedInUser);
+        //     setPage(loggedInUser.role === 'Passenger' ? 'passenger' : 'fleet');
+        // }
 
-        const storedVehicles = JSON.parse(localStorage.getItem('neurofleetx_vehicles'));
-        if (storedVehicles) setVehicles(storedVehicles);
+        // const storedUsers = JSON.parse(localStorage.getItem('neurofleetx_users_db'));
+        // if (storedUsers) {
+        //     setUsers(storedUsers);
+        // }
 
-        const storedRides = JSON.parse(localStorage.getItem('neurofleetx_rides'));
-        if (storedRides) setRides(storedRides);
+        // const storedVehicles = JSON.parse(localStorage.getItem('neurofleetx_vehicles'));
+        // if (storedVehicles) {
+        //     setVehicles(storedVehicles);
+        // }
+
+        // const storedRides = JSON.parse(localStorage.getItem('neurofleetx_rides'));
+        // if (storedRides) {
+        //     setRides(storedRides);
+        // }
     }, []);
 
-    // Authentication Functions
+    // --- Authentication Functions ---
     const login = (credentials) => {
         const userExists = users.find(u => u.email === credentials.email && u.password === credentials.password);
         if (userExists) {
@@ -70,7 +86,7 @@ export default function App() {
         setPage('login');
     };
 
-    // Data Management Functions
+    // --- Data Management Functions ---
     const addVehicle = (vehicleData) => {
         const newVehicles = [...vehicles, { ...vehicleData, id: Date.now(), status: 'Idle', ownerEmail: user.email }];
         localStorage.setItem('neurofleetx_vehicles', JSON.stringify(newVehicles));
@@ -84,9 +100,14 @@ export default function App() {
     };
 
     const startRide = (rideDetails) => {
-        const availableVehicle = vehicles.find(v => v.status === 'Idle');
+        const availableVehicle = vehicles.find(v => 
+            v.status === 'Idle' && 
+            v.type === rideDetails.route.vehicleType &&
+            v.capacity >= rideDetails.route.passengerCount
+        );
+
         if (!availableVehicle) {
-            console.error("No available vehicles.");
+            console.error("No matching available vehicles.");
             return;
         }
 
@@ -94,12 +115,11 @@ export default function App() {
             ...rideDetails, 
             id: Date.now(), 
             passenger: user.name,
-            driver: availableVehicle.driver,
-            vehicleId: availableVehicle.id,
+            driver: availableVehicle.driver, 
+            vehicleId: availableVehicle.id, 
             status: 'In Progress', 
             date: new Date().toISOString().split('T')[0] 
         };
-        
         const updatedRides = [...rides, newRide];
         localStorage.setItem('neurofleetx_rides', JSON.stringify(updatedRides));
         setRides(updatedRides);
@@ -116,7 +136,6 @@ export default function App() {
 
     const completeRide = (rideToComplete) => {
         if (!rideToComplete) return;
-        
         const updatedRides = rides.map(r => r.id === rideToComplete.id ? { ...r, status: 'Completed' } : r);
         localStorage.setItem('neurofleetx_rides', JSON.stringify(updatedRides));
         setRides(updatedRides);
@@ -133,6 +152,7 @@ export default function App() {
     };
 
     const cancelRide = () => {
+        if (!currentRide) return;
         const updatedRides = rides.map(r => r.id === currentRide.id ? { ...r, status: 'Cancelled' } : r);
         localStorage.setItem('neurofleetx_rides', JSON.stringify(updatedRides));
         setRides(updatedRides);
@@ -147,11 +167,12 @@ export default function App() {
         setPage('passenger');
     };
 
-    // Context values
+
+    // --- Context Providers ---
     const authContextValue = { user, login, signup, logout };
     const dataContextValue = { vehicles, addVehicle, removeVehicle, rides, startRide, cancelRide, completeRide, currentRide };
 
-    // Page rendering logic
+    // --- Page Rendering Logic ---
     const renderPage = () => {
         if (!user) {
             switch (page) {
@@ -171,7 +192,7 @@ export default function App() {
                 case 'profile':
                     return <ProfilePage setPage={setPage} />;
                 default:
-                    return <PassengerHomePage setPage={setPage} setCurrentRide={setCurrentRide} />;
+                    return <PassengerHomePage setPage={setPage} setCurrentRide={setCurrentRide} rides={rides} />;
             }
         }
 
@@ -181,15 +202,15 @@ export default function App() {
     };
     
     return (
-        <AuthProvider value={authContextValue}>
-            <DataProvider value={dataContextValue}>
+        <AuthContext.Provider value={authContextValue}>
+            <DataContext.Provider value={dataContextValue}>
                 <div className="min-h-screen bg-gray-900 text-white font-sans">
                     <Navbar setPage={setPage} />
                     <main className="p-4 md:p-8">
                         {renderPage()}
                     </main>
                 </div>
-            </DataProvider>
-        </AuthProvider>
+            </DataContext.Provider>
+        </AuthContext.Provider>
     );
 }
