@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import DataContext from '../../context/DataContext';
+import DataContext  from '../../context/DataContext';
 
 const ConfirmRidePage = ({ setPage, rideDetails }) => {
     const { startRide, vehicles } = useContext(DataContext);

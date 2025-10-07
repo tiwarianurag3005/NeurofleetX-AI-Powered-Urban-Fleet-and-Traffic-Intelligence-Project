@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import DataContext from '../../context/DataContext';
+import DataContext  from '../../context/DataContext';
 import MapView from '../common/MapView';
 import { UserCircleIcon } from '../common/Icons';
 
@@ -26,8 +26,8 @@ const TrackingPage = ({ setPage }) => {
     return (
         <div className="space-y-8">
             <h2 className="text-3xl font-bold text-center">Tracking Your Ride</h2>
-             <MapView vehiclePositions={vehicleForRide ? [vehicleForRide] : []} routes={[currentRide.route]} selectedRouteId={currentRide.route.id} />
-             <div className="max-w-4xl mx-auto bg-gray-800 rounded-2xl shadow-lg p-6 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 md:space-x-6">
+            <MapView vehiclePositions={vehicleForRide ? [vehicleForRide] : []} routes={[currentRide.route]} selectedRouteId={currentRide.route.id} />
+            <div className="max-w-4xl mx-auto bg-gray-800 rounded-2xl shadow-lg p-6 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 md:space-x-6">
                 <div className="flex items-center space-x-4">
                     <UserCircleIcon className="w-16 h-16 text-gray-500" />
                     <div>
@@ -40,8 +40,8 @@ const TrackingPage = ({ setPage }) => {
                     <p className="text-gray-400">Status</p>
                     <p className="text-xl font-bold text-green-400 animate-pulse">{currentRide.status}</p>
                 </div>
-                 <button onClick={cancelRide} className="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 w-full md:w-auto">Cancel Ride</button>
-             </div>
+                <button onClick={cancelRide} className="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 w-full md:w-auto">Cancel Ride</button>
+            </div>
         </div>
     );
 };

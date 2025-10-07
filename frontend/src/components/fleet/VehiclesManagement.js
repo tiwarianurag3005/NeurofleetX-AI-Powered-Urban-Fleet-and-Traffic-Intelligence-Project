@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import DataContext from '../../context/DataContext';
+import  DataContext  from '../../context/DataContext';
 import { MapPinIcon } from '../common/Icons';
 
 const VehiclesManagement = ({ ownerVehicles }) => {
@@ -59,7 +59,7 @@ const VehiclesManagement = ({ ownerVehicles }) => {
                                 <option>Emergency</option>
                             </select>
                         </div>
-                         <div>
+                        <div>
                             <label className="text-sm font-medium text-gray-400">Passenger Capacity</label>
                             <input type="number" value={passengerCapacity} onChange={(e) => setPassengerCapacity(e.target.value)} placeholder="e.g., 4" className="mt-1 w-full bg-gray-700 border-gray-600 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-cyan-500" required min="1" />
                         </div>
@@ -87,7 +87,7 @@ const VehiclesManagement = ({ ownerVehicles }) => {
                                         <p className="text-xs text-gray-500">Location: {v.location}</p>
                                     </div>
                                     <div className="text-right">
-                                         <p className={`text-sm font-semibold ${v.status === 'Idle' ? 'text-yellow-400' : 'text-green-400'}`}>{v.status}</p>
+                                        <p className={`text-sm font-semibold ${v.status === 'Idle' ? 'text-yellow-400' : 'text-green-400'}`}>{v.status}</p>
                                         <button onClick={() => removeVehicle(v.id)} className="text-red-400 hover:text-red-500 text-sm font-semibold">Remove</button>
                                     </div>
                                 </div>

@@ -8,18 +8,30 @@ const SignUpPage = ({ setPage }) => {
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('Passenger');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
-    const handleSignUp = (e) => {
+    const handleSignUp = async (e) => {
         e.preventDefault();
         if (!name.trim() || !email.trim() || !password.trim()) {
             setError('Please fill in all fields.');
             return;
         }
+        
+        if (password.length < 6) {
+            setError('Password must be at least 6 characters long.');
+            return;
+        }
+        
         setError('');
-        const result = signup({ name, email, password, role });
+        setLoading(true);
+        
+        const result = await signup({ name, email, password, role });
+        
         if (!result.success) {
             setError(result.message);
         }
+        
+        setLoading(false);
     };
 
     return (
@@ -38,6 +50,7 @@ const SignUpPage = ({ setPage }) => {
                             placeholder="e.g., John Doe" 
                             required 
                             autoComplete="off"
+                            disabled={loading}
                         />
                     </div>
                     <div>
@@ -51,6 +64,7 @@ const SignUpPage = ({ setPage }) => {
                             placeholder="you@example.com" 
                             required 
                             autoComplete="off"
+                            disabled={loading}
                         />
                     </div>
                     <div>
@@ -64,23 +78,40 @@ const SignUpPage = ({ setPage }) => {
                             placeholder="••••••••" 
                             required 
                             autoComplete="new-password"
+                            disabled={loading}
                         />
                     </div>
                     <div>
                         <label htmlFor="role" className="text-sm font-medium text-gray-400">I am a...</label>
-                        <select id="role" value={role} onChange={(e) => setRole(e.target.value)} className="mt-1 block w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-500">
-                            <option>Passenger</option>
-                            <option>Fleet Owner</option>
+                        <select 
+                            id="role" 
+                            value={role} 
+                            onChange={(e) => setRole(e.target.value)} 
+                            className="mt-1 block w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                            disabled={loading}
+                        >
+                            <option value="Passenger">Passenger</option>
+                            <option value="Fleet Owner">Fleet Owner</option>
                         </select>
                     </div>
                     {error && <p className="text-sm text-red-400 text-center">{error}</p>}
                     <div>
-                        <button type="submit" className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 focus:ring-offset-gray-800 transition duration-300">Sign Up</button>
+                        <button 
+                            type="submit" 
+                            disabled={loading}
+                            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 focus:ring-offset-gray-800 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {loading ? 'Creating Account...' : 'Sign Up'}
+                        </button>
                     </div>
                 </form>
                 <p className="text-sm text-center text-gray-400">
                     Already have an account?{' '}
-                    <button onClick={() => setPage('login')} className="font-medium text-cyan-400 hover:text-cyan-300">
+                    <button 
+                        onClick={() => setPage('login')} 
+                        className="font-medium text-cyan-400 hover:text-cyan-300"
+                        disabled={loading}
+                    >
                         Login
                     </button>
                 </p>

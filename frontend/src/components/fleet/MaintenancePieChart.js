@@ -21,12 +21,12 @@ const MaintenancePieChart = ({ vehicles }) => {
 
     return (
         <div className="bg-gray-800 p-6 rounded-2xl shadow-lg col-span-1 md:col-span-2 lg:col-span-1">
-             <p className="text-gray-400 text-sm font-medium mb-2">Maintenance Status</p>
+            <p className="text-gray-400 text-sm font-medium mb-2">Maintenance Status</p>
             <div className="flex items-center space-x-4">
-                 <svg viewBox="0 0 100 100" className="w-24 h-24">
+                <svg viewBox="0 0 100 100" className="w-24 h-24">
                     {segments.map((path, i) => (<path key={i} d={path} fill={colors[Object.keys(percentages).filter(k => percentages[k] > 0)[i]]} />))}
-                 </svg>
-                 <div className="text-sm space-y-1">
+                </svg>
+                <div className="text-sm space-y-1">
                     {Object.keys(colors).map(key => ( <div key={key} className="flex items-center space-x-2"> <div className="w-3 h-3 rounded-full" style={{ backgroundColor: colors[key] }}></div> <span>{key} ({data[key]})</span> </div> ))}
                 </div>
             </div>

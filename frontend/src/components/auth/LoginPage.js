@@ -6,18 +6,25 @@ const LoginPage = ({ setPage }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
         if (!email || !password) {
             setError('Please enter both email and password.');
             return;
         }
+        
         setError('');
-        const result = login({ email, password });
+        setLoading(true);
+        
+        const result = await login({ email, password });
+        
         if (!result.success) {
             setError(result.message);
         }
+        
+        setLoading(false);
     };
 
     return (
@@ -36,6 +43,7 @@ const LoginPage = ({ setPage }) => {
                             placeholder="you@example.com" 
                             required 
                             autoComplete="off" 
+                            disabled={loading}
                         />
                     </div>
                     <div>
@@ -48,17 +56,28 @@ const LoginPage = ({ setPage }) => {
                             className="mt-1 block w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-500" 
                             placeholder="••••••••" 
                             required 
-                            autoComplete="new-password"
+                            autoComplete="current-password"
+                            disabled={loading}
                         />
                     </div>
                     {error && <p className="text-sm text-red-400 text-center">{error}</p>}
                     <div>
-                        <button type="submit" className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 focus:ring-offset-gray-800 transition duration-300">Login</button>
+                        <button 
+                            type="submit" 
+                            disabled={loading}
+                            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 focus:ring-offset-gray-800 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {loading ? 'Logging in...' : 'Login'}
+                        </button>
                     </div>
                 </form>
                 <p className="text-sm text-center text-gray-400">
                     Don't have an account?{' '}
-                    <button onClick={() => setPage('signup')} className="font-medium text-cyan-400 hover:text-cyan-300">
+                    <button 
+                        onClick={() => setPage('signup')} 
+                        className="font-medium text-cyan-400 hover:text-cyan-300"
+                        disabled={loading}
+                    >
                         Sign Up
                     </button>
                 </p>

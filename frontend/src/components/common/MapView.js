@@ -46,8 +46,7 @@ const MapView = ({ children, vehiclePositions, routes, selectedRouteId, pickupCo
     return (
         <div ref={mapRef} className="relative w-full h-96 md:h-[600px] bg-gray-800 rounded-2xl overflow-hidden shadow-2xl border border-gray-700">
             {renderMapTiles()}
-             {/* --- New Heatmap Overlay --- */}
-            {showHeatmap && (
+             {showHeatmap && (
                 <div className="absolute inset-0 z-0 pointer-events-none" style={{
                     background: `
                         radial-gradient(circle at 25% 30%, rgba(255, 0, 0, 0.4), transparent 30%),
@@ -74,20 +73,20 @@ const MapView = ({ children, vehiclePositions, routes, selectedRouteId, pickupCo
             </svg>
             
             {routes && routes.map(route => (
-            <div key={`info-${route.id}`} className="absolute" style={{ ...route.infoPosition, pointerEvents: 'auto', opacity: selectedRouteId === route.id || !selectedRouteId ? 1 : 0.35, transition: 'opacity 0.3s' }}>
-                    <div className={`flex items-center space-x-2 p-2 rounded-lg shadow-xl ${selectedRouteId === route.id ? 'bg-cyan-600' : 'bg-gray-900/80 backdrop-blur-sm'}`}>
-                        <CarIcon className="w-5 h-5" />
-                        <div><p className="font-bold text-sm">{route.time}</p><p className="text-xs text-gray-300">{route.distance}</p></div>
-                    </div>
-                </div>
+                 <div key={`info-${route.id}`} className="absolute" style={{ ...route.infoPosition, pointerEvents: 'auto', opacity: selectedRouteId === route.id || !selectedRouteId ? 1 : 0.35, transition: 'opacity 0.3s' }}>
+                     <div className={`flex items-center space-x-2 p-2 rounded-lg shadow-xl ${selectedRouteId === route.id ? 'bg-cyan-600' : 'bg-gray-900/80 backdrop-blur-sm'}`}>
+                         <CarIcon className="w-5 h-5" />
+                         <div><p className="font-bold text-sm">{route.time}</p><p className="text-xs text-gray-300">{route.distance}</p></div>
+                     </div>
+                 </div>
             ))}
 
             {children}
             
             {!vehiclePositions && carRef && (
-                <div ref={carRef} className="absolute top-1/2 left-1/2 transition-transform duration-3000 ease-in-out z-20">
-                    <CarIcon className="w-10 h-10 text-cyan-400 transform -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)]" />
-                </div>
+                 <div ref={carRef} className="absolute top-1/2 left-1/2 transition-transform duration-3000 ease-in-out z-20">
+                     <CarIcon className="w-10 h-10 text-cyan-400 transform -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)]" />
+                 </div>
             )}
             
             {pickupCoords && (<div className="absolute z-10" style={{ top: pickupCoords.y, left: pickupCoords.x, transform: 'translate(-50%, -100%)' }}><MapPinIcon className="w-10 h-10 text-green-400 drop-shadow-lg" /><span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white font-bold text-sm">P</span></div>)}
@@ -95,11 +94,11 @@ const MapView = ({ children, vehiclePositions, routes, selectedRouteId, pickupCo
             
             {vehiclePositions && vehiclePositions.map(v => (
                  <div key={v.id} style={{ top: `${20 + (v.id % 5) * 15}%`, left: `${10 + (v.id % 7) * 12}%` }} className="absolute transition-all duration-1000 z-20">
-                    <div className="relative group">
-                        <CarIcon className={`w-8 h-8 ${v.status === 'On Ride' ? 'text-green-400' : 'text-yellow-400'} drop-shadow-lg`} />
-                        <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-max bg-gray-900 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity"> {v.driver} ({v.name}) <br/> Status: {v.status} </div>
-                    </div>
-                </div>
+                     <div className="relative group">
+                         <CarIcon className={`w-8 h-8 ${v.status === 'On Ride' ? 'text-green-400' : 'text-yellow-400'} drop-shadow-lg`} />
+                         <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-max bg-gray-900 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity"> {v.driver} ({v.name}) <br/> Status: {v.status} </div>
+                     </div>
+                 </div>
             ))}
         </div>
     );
