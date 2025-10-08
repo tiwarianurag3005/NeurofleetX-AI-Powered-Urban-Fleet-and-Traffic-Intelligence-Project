@@ -1,0 +1,76 @@
+LifeCycle
+The Class Component Lifecycle (The "Old" Way)
+Class components use specific life cycle methods that are automatically called at different points. This model is broken into three main phases.
+
+Mounting (Birth)
+This phase occurs when an instance of a component is being created and inserted into the DOM.
+
+constructor(): Called before the component is mounted. It's used for initializing state and binding event handlers.
+
+render(): The only required method. It examines this.props and this.state and returns the JSX to be rendered.
+
+componentDidMount(): Called immediately after the component is rendered and added to the DOM. This is the perfect place to make API calls to fetch data.
+
+Updating (Living)
+An update can be caused by changes to props or state. These methods are called when a component is being re-rendered.
+
+render(): Called again to create the updated UI.
+
+componentDidUpdate(): Called immediately after updating occurs. You can perform side effects here, but you should typically wrap them in a condition to avoid infinite loops.
+
+Unmounting (Death)
+This phase occurs when a component is being removed from the DOM.
+
+componentWillUnmount(): Called right before a component is unmounted and destroyed. This is the ideal place for cleanup, such as invalidating timers, canceling network requests, or removing event listeners.
+
+2. The Functional Component Lifecycle with Hooks (The Modern Way) 🔄
+Functional components use the useEffect hook to handle all the life cycle events that class components managed with different methods. It combines the concepts of componentDidMount, componentDidUpdate, and componentWillUnmount into a single API.
+
+The behavior of useEffect depends on its second argument, the dependency array.
+
+Mounting (componentDidMount)
+To run an effect only once after the initial render, provide an empty dependency array [].
+
+JavaScript
+
+import React, { useState, useEffect } from 'react';
+
+function MyComponent() {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    // This runs only once, after the first render
+    console.log('Component has mounted!');
+    fetch('https://api.example.com/data')
+      .then(res => res.json())
+      .then(setData);
+  }, []); // <-- Empty array means it runs only once
+
+  return <div>{data ? data.message : 'Loading...'}</div>;
+}
+Updating (componentDidUpdate)
+To run an effect after the initial render and every time a specific prop or state value changes, include that value in the dependency array.
+
+JavaScript
+
+useEffect(() => {
+  // This runs on mount AND every time `someProp` changes
+  console.log(`The value of someProp is now ${someProp}`);
+}, [someProp]); // <-- Effect depends on someProp
+Unmounting (componentWillUnmount)
+To run a cleanup function before the component unmounts (or before the effect runs again), return a function from within useEffect.
+
+JavaScript
+
+useEffect(() => {
+  const timerId = setInterval(() => {
+    console.log('Timer tick');
+  }, 1000);
+
+  // Return a cleanup function
+  return () => {
+    console.log('Cleaning up the timer!');
+    clearInterval(timerId); // This stops the timer when the component unmounts
+  };
+}, []); // <-- Runs once on mount, cleans up on unmount
+The useEffect hook provides a more unified and flexible way to manage component side effects and life cycle events, which is why it's the standard in modern React development.
