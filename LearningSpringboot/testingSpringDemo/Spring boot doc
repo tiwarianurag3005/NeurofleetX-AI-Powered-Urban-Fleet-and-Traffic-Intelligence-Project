@@ -1,0 +1,104 @@
+Spring Boot offers several advantages that make it a popular choice for Java developers:
+
+Auto-Configuration: It automatically configures your application based on the dependencies (JARs) you have on your classpath. For example, if it sees a dependency for a database like H2, it will automatically set up an in-memory database connection for you.
+
+Starter Dependencies: It provides a set of convenient "starter" dependencies to simplify your build configuration. For example, including spring-boot-starter-web is all you need to build a web application.
+
+Embedded Servers: It includes embedded servers like Tomcat, Jetty, or Undertow directly within your application's JAR file. This means you can run your application as a simple executable JAR (java -jar my-app.jar) without needing to deploy it to an external web server.
+
+No XML Configuration: It encourages Java-based configuration over cumbersome XML files, leading to cleaner and more maintainable code.
+
+Production-Ready Features: It includes helpful features for production environments out-of-the-box, such as health checks, metrics, and externalized configuration through a module called Spring Boot Actuator.
+
+Getting Started: A "Hello, World!" Application 🚀
+Here’s how to create a simple web application that returns "Hello, World!" when you visit a specific URL.
+
+Step 1: Generate the Project
+The easiest way to start is by using the Spring Initializr (start.spring.io).
+
+Go to start.spring.io.
+
+Choose your project settings:
+
+Project: Maven Project
+
+Language: Java
+
+Spring Boot: The latest stable version.
+
+Project Metadata: Fill in your Group, Artifact, etc. (e.g., com.example, demo).
+
+Packaging: Jar
+
+Java: Version 17 or newer.
+
+In the Dependencies section, click "ADD DEPENDENCIES" and search for and add "Spring Web".
+
+Click "GENERATE". This will download a .zip file. Unzip it and open it in your favorite IDE (like IntelliJ IDEA or VS Code).
+
+Step 2: Create a REST Controller
+A controller is a component that handles incoming web requests. In your project, navigate to src/main/java/com/example/demo and create a new Java class named HelloController.java.
+
+Add the following code to this file:
+
+Java
+
+package com.example.demo;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class HelloController {
+
+    @GetMapping("/hello")
+    public String sayHello() {
+        return "Hello, World!";
+    }
+}
+Explanation:
+
+@RestController: This annotation marks the class as a controller where every method returns a domain object instead of a view.
+
+@GetMapping("/hello"): This maps HTTP GET requests for the /hello URL to the sayHello() method.
+
+Step 3: Run the Application
+Navigate to the main application file, which will be named something like DemoApplication.java. It will look like this:
+
+Java
+
+package com.example.demo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class DemoApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(DemoApplication.class, args);
+    }
+}
+Right-click on this file in your IDE and select "Run". The embedded Tomcat server will start, and your application will be running.
+
+Step 4: Test it!
+Open your web browser and go to http://localhost:8080/hello. You should see the text "Hello, World!" on the screen.
+
+Common Spring Boot Annotations
+Annotations are a key part of Spring Boot. Here are some of the most important ones:
+
+@SpringBootApplication: This is a convenience annotation that combines three other annotations: @Configuration, @EnableAutoConfiguration, and @ComponentScan. It's placed on your main application class.
+
+@RestController: Marks a class as a request handler for RESTful services.
+
+@Service: Marks a class as a business service component.
+
+@Repository: Marks a class as a data access component (e.g., for database interactions).
+
+@Autowired: Used for automatic dependency injection. It tells Spring to find a bean of a specific type and inject it into the current class.
+
+@GetMapping, @PostMapping, @PutMapping, @DeleteMapping: These map HTTP requests of different types (GET, POST, etc.) to specific handler methods.
+
+@Configuration: Designates a class as a source of bean definitions.
+
+@Value("${property.name}"): Injects a value from your application.properties file.
