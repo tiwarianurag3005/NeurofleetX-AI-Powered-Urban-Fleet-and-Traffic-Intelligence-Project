@@ -10,7 +10,7 @@ No XML Configuration: It encourages Java-based configuration over cumbersome XML
 
 Production-Ready Features: It includes helpful features for production environments out-of-the-box, such as health checks, metrics, and externalized configuration through a module called Spring Boot Actuator.
 
-Getting Started: A "Hello, World!" Application 🚀
+Getting Started: A "Hello, World!" Application 
 Here’s how to create a simple web application that returns "Hello, World!" when you visit a specific URL.
 
 Step 1: Generate the Project
