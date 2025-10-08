@@ -1,0 +1,186 @@
+React Hooks 
+Hooks are functions that let you "hook into" React state and lifecycle features from function components. They allow you to use state and other React features without writing a class.
+
+Key Hooks Beyond useState
+1. useEffect
+The useEffect hook lets you perform side effects in your components. Side effects are operations that affect something outside of the component itself, such as:
+
+Fetching data from an API.
+
+Manually changing the DOM (e.g., changing the document title).
+
+Setting up or cleaning up subscriptions (like timers).
+
+It takes two arguments: a function to run and a "dependency array" that tells React when to re-run the effect.
+
+No dependency array: The effect runs after every render.
+
+Empty array []: The effect runs only once, after the initial render.
+
+Array with values [prop, state]: The effect runs once on mount, and again only if any of the values in the array have changed.
+
+Example: Fetching data from an API
+
+JavaScript
+
+import React, { useState, useEffect } from 'react';
+
+function UserProfile({ userId }) {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    // This function will run when the component mounts
+    // and whenever 'userId' changes.
+    fetch(`https://api.example.com/users/${userId}`)
+      .then(response => response.json())
+      .then(data => setUser(data));
+
+  }, [userId]); // Dependency array
+
+  if (!user) {
+    return <div>Loading...</div>;
+  }
+
+  return <h1>{user.name}</h1>;
+}
+2. useContext
+The useContext hook is used to manage global state and avoid "prop drilling". Prop drilling is the problem of passing props down through multiple layers of nested components that don't actually need the data themselves.
+
+useContext allows a parent component to make data available to any component in the tree below it, no matter how deeply nested, without passing it explicitly.
+
+Example: A theme (dark/light mode) provider
+
+JavaScript
+
+// 1. Create a Context
+const ThemeContext = React.createContext('light');
+
+// 2. Provide the context value from a parent component
+function App() {
+  return (
+    <ThemeContext.Provider value="dark">
+      <Toolbar />
+    </ThemeContext.Provider>
+  );
+}
+
+// 3. Consume the context value in any child component
+function ThemedButton() {
+  // Use the useContext hook to read the current theme
+  const theme = React.useContext(ThemeContext);
+  
+  return <button className={theme}>I am a {theme} button</button>;
+}
+Rules of Hooks
+React enforces two important rules for using hooks:
+
+Only call Hooks at the top level. Don't call them inside loops, conditions, or nested functions.
+
+Only call Hooks from React function components. Don't call them from regular JavaScript functions.
+
+Styling in React
+There are several popular ways to style React components. The best choice often depends on the project's scale and team preference.
+
+1. Plain CSS Stylesheets
+This is the traditional approach. You create a .css file and import it directly into your component file.
+
+How it works: import './MyComponent.css';
+
+Pros: Simple, familiar, and easy to use for developers with a CSS background.
+
+Cons: All styles are in the global scope. This means style rules from one file can accidentally affect elements in another component, leading to class name conflicts.
+
+JavaScript
+
+/* MyComponent.css */
+.title {
+  color: blue;
+  font-size: 24px;
+}
+JavaScript
+
+// MyComponent.js
+import React from 'react';
+import './MyComponent.css';
+
+function MyComponent() {
+  return <h1 className="title">Hello World</h1>; // Note: use 'className' not 'class'
+}
+2. CSS Modules
+CSS Modules solve the global scope problem of plain CSS. When you use a CSS Module, the build process automatically generates a unique class name for each style.
+
+How it works: Name your file MyComponent.module.css. When you import it, you get an object that maps your class names to the unique generated names.
+
+Pros: Locally scoped styles by default, which prevents conflicts.
+
+Cons: Can be slightly more verbose to apply classes ({styles.title}).
+
+CSS
+
+/* MyComponent.module.css */
+.title {
+  color: green;
+  background-color: lightgrey;
+}
+JavaScript
+
+// MyComponent.js
+import React from 'react';
+import styles from './MyComponent.module.css';
+
+function MyComponent() {
+  // styles.title will be a unique string like 'MyComponent_title__a1b2c'
+  return <h1 className={styles.title}>Hello CSS Modules</h1>;
+}
+3. CSS-in-JS
+This approach involves writing your CSS styles directly in your JavaScript component files, usually with the help of libraries like Styled-Components or Emotion.
+
+How it works: You define components with attached styles. The library handles creating and applying the CSS.
+
+Pros: Component-scoped styles, easy access to props for dynamic styling, and no unused CSS.
+
+Cons: A slight runtime performance overhead and a learning curve.
+
+Example using Styled-Components:
+
+JavaScript
+
+import React from 'react';
+import styled from 'styled-components';
+
+// Create a Title component that will render an <h1> tag with these styles
+const Title = styled.h1`
+  font-size: 1.5em;
+  text-align: center;
+  color: ${props => (props.primary ? 'palevioletred' : 'black')};
+`;
+
+function MyComponent() {
+  return (
+    <div>
+      <Title>Normal Title</Title>
+      <Title primary>Primary Title</Title>
+    </div>
+  );
+}
+4. Utility-First CSS (Tailwind CSS)
+Tailwind CSS is a highly popular utility-first framework. Instead of writing custom CSS classes, you style elements by applying pre-existing, low-level utility classes directly in your JSX.
+
+How it works: You compose a design from small utility classes. For example, flex, pt-4 (padding-top), and text-center.
+
+Pros: Extremely fast for prototyping, enforces design consistency, and your CSS bundle only includes the styles you actually use.
+
+Cons: Can make your JSX look "cluttered" to some, and requires a mindset shift from traditional CSS.
+
+JavaScript
+
+// MyComponent.js
+import React from 'react';
+
+function MyComponent() {
+  return (
+    <div className="p-6 max-w-sm mx-auto bg-white rounded-xl shadow-md flex items-center space-x-4">
+      <div className="text-xl font-medium text-black">Hello Tailwind!</div>
+    </div>
+  );
+}
